@@ -1,0 +1,61 @@
+#include <stdio.h>
+
+// Tamaño máximo de la matriz
+#define MAX_SIZE 1000
+
+// Función para imprimir una matriz
+void printMatrix(int mat[MAX_SIZE][MAX_SIZE], int size) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            printf("%d\t", mat[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+// Función para multiplicar dos matrices
+void multiplyMatrices(int mat1[MAX_SIZE][MAX_SIZE], int mat2[MAX_size][MAX_SIZE], int result[MAX_SIZE][MAX_SIZE], int size) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            result[i][j] = 0;
+            for (int k = 0; k < size; k++) {
+                result[i][j] += mat1[i][k] * mat2[k][j];
+            }
+        }
+    }
+}
+
+int main() {
+    int size;
+    
+    printf("Ingrese el tamaño de la matriz (menor o igual a %d): ", MAX_SIZE);
+    scanf("%d", &size);
+    
+    if (size > MAX_SIZE) {
+        printf("El tamaño de la matriz excede el límite permitido.\n");
+        return 1;
+    }
+    
+    int mat1[MAX_SIZE][MAX_SIZE], mat2[MAX_SIZE][MAX_SIZE], result[MAX_SIZE][MAX_SIZE];
+    
+    printf("Ingrese los elementos de la primera matriz:\n");
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            scanf("%d", &mat1[i][j]);
+        }
+    }
+    
+    printf("Ingrese los elementos de la segunda matriz:\n");
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            scanf("%d", &mat2[i][j]);
+        }
+    }
+    
+    // Multiplicación de matrices
+    multiplyMatrices(mat1, mat2, result, size);
+    printf("La multiplicación de las matrices es:\n");
+    printMatrix(result, size);
+    
+    return 0;
+}
