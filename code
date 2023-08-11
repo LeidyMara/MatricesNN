@@ -1,20 +1,22 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 // Tamaño máximo de la matriz
-#define MAX_SIZE 1000
+#define MAX_SIZE 10 //el máximo del long int
 
 // Función para imprimir una matriz
-void printMatrix(int mat[MAX_SIZE][MAX_SIZE], int size) {
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            printf("%d\t", mat[i][j]);
+void printMatrix(long int mat[MAX_SIZE][MAX_SIZE], long int size) {
+    for (long int i = 0; i < size; i++) {
+        for (long int j = 0; j < size; j++) {
+            printf("%ld\t", mat[i][j]);
         }
         printf("\n");
     }
 }
 
 // Función para multiplicar dos matrices
-void multiplyMatrices(int mat1[MAX_SIZE][MAX_SIZE], int mat2[MAX_size][MAX_SIZE], int result[MAX_SIZE][MAX_SIZE], int size) {
+void multiplyMatrices(long int mat1[MAX_SIZE][MAX_SIZE], long int mat2[MAX_SIZE][MAX_SIZE], long int result[MAX_SIZE][MAX_SIZE], long int size) {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
             result[i][j] = 0;
@@ -25,37 +27,63 @@ void multiplyMatrices(int mat1[MAX_SIZE][MAX_SIZE], int mat2[MAX_size][MAX_SIZE]
     }
 }
 
+// Función para generar y retornar una matriz nxn aleatoriamente
+void generateRandomMatrix(long int mat[MAX_SIZE][MAX_SIZE], long int size, long int minVal, long int maxVal) {
+    srand(time(NULL)); // Inicializar la semilla aleatoria
+    
+    for (long int i = 0; i < size; i++) {
+        for (long int j = 0; j < size; j++) {
+            mat[i][j] = rand() % (maxVal - minVal + 1) + minVal;
+        }
+    }
+}
+
 int main() {
-    int size;
+    long int size, minVal, maxVal;
     
     printf("Ingrese el tamaño de la matriz (menor o igual a %d): ", MAX_SIZE);
-    scanf("%d", &size);
+    scanf("%ld", &size);
+    
+    printf("Ingrese el valor mínimo para los elementos de la matriz: ");
+    scanf("%ld", &minVal);
+    
+    printf("Ingrese el valor máximo para los elementos de la matriz: ");
+    scanf("%ld", &maxVal);
     
     if (size > MAX_SIZE) {
         printf("El tamaño de la matriz excede el límite permitido.\n");
         return 1;
     }
     
-    int mat1[MAX_SIZE][MAX_SIZE], mat2[MAX_SIZE][MAX_SIZE], result[MAX_SIZE][MAX_SIZE];
-    
-    printf("Ingrese los elementos de la primera matriz:\n");
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            scanf("%d", &mat1[i][j]);
-        }
+    long int* matrices[2];
+     
+    for (long int i = 0; i < 2; i++) {
+            matrices[i] = (long int*)malloc(size * size * sizeof(long int)); // Asignar memoria para la matriz
+            if (matrices[i] == NULL) {
+                printf("Error al asignar memoria.\n");
+                return 1;
+            }
+        
+        generateRandomMatrix((long int(*)[MAX_SIZE])matrices[i], size, minVal, maxVal); // Cast necesario para la función
     }
     
-    printf("Ingrese los elementos de la segunda matriz:\n");
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            scanf("%d", &mat2[i][j]);
-        }
+    // Imprimir las matrices generadas
+    for (long int i = 0; i < 2; i++) {
+        printf("Matriz %ld:\n", i + 1);
+        printMatrix((long int(*)[MAX_SIZE])matrices[i], size); // Cast necesario para la función
+        printf("\n");
     }
+    long int result[MAX_SIZE][MAX_SIZE];
     
     // Multiplicación de matrices
-    multiplyMatrices(mat1, mat2, result, size);
+    multiplyMatrices((long int(*)[MAX_SIZE])matrices[0], (long int(*)[MAX_SIZE])matrices[1], result, size);
     printf("La multiplicación de las matrices es:\n");
     printMatrix(result, size);
+    
+        // Liberar la memoria asignada
+    for (int i = 0; i < 2; i++) {
+        free(matrices[i]);
+    }
     
     return 0;
 }
